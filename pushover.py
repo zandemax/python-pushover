@@ -293,6 +293,7 @@ For more details and bug reports, see: https://github.com/Thibauth/python-pushov
     parser.add_argument("--priority", "-p", help="notification priority (-1, 0, 1 or 2)", type=int)
     parser.add_argument("--retry", "-r", help="resend interval in seconds (required for priority 2)", type=int)
     parser.add_argument("--expire", "-e", help="expiration time in seconds (required for priority 2)", type=int)
+    parser.add_argument("--attachment", "-a", help="file path to an attachment sent with the message")
     parser.add_argument("--version", "-v", action="version",
                         help="output version information and exit",
                         version="""
@@ -316,11 +317,14 @@ There is NO WARRANTY, to the extent permitted by law.""")
         token = args.token or params["token"]
     except KeyError:
         raise ApiTokenError()
+    
+    if args.attachment:
+        attachment = open(args.attachment, 'rb')
 
     Pushover(token).send_message(user_key, args.message, device=device,
             title=args.title, priority=args.priority, url=args.url,
             url_title=args.url_title, timestamp=True, retry=args.retry,
-            expire=args.expire)
+            expire=args.expire, attachment=attachment)
 
 if __name__ == "__main__":
     main()
